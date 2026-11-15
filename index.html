@@ -1,0 +1,511 @@
+<!doctype html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>متجر مرسّخ</title><meta name="description" content="شاي مرسّخ: شاي سموار بتوليفة خاصة وتجربة مختلفة. اطلب كيس 200 جم من الواتساب.">
+<meta property="og:title" content="متجر مرسّخ"><meta property="og:description" content="شاي سموار بتوليفة خاصة وتجربة مختلفة."><meta property="og:image" content="img/set.jpg"><link rel="icon" href="img/mark.png">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&family=Noto+Naskh+Arabic:wght@600;700&display=swap"><style>body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style><style>
+/* Layout: a single-brand storefront. Forest hero with the pour photo, a full product block (gallery + buy box),
+   coming-soon shelf, brewing video beside its four steps, then wholesale, FAQ and footer. Cart is a drawer that
+   walks cart -> details -> WhatsApp. */
+:root{
+  --forest:#0A2C18; --forest-deep:#06140B; --cream:#FCDCAC; --on-forest:#F6EFE0;
+  --bg:#FAF6EE; --panel:#FFFFFF; --ink:#14231A; --muted:#5B665E; --line:#E3DCCB;
+  --accent:#0A2C18; --on-accent:#FCDCAC; --soft:#F1EADB; --ok:#2F6B45; --warn-bg:#FFF1D6; --warn:#7A4B00; --err:#A3261B; --wa:#1F7A4D;
+  --display:"Noto Naskh Arabic","Geeza Pro","Traditional Arabic",serif;
+  --body:"IBM Plex Sans Arabic","Segoe UI",Tahoma,sans-serif;
+  --r:16px;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#06140B; --panel:#0D2015; --ink:#EDE6D6; --muted:#A9B1A6; --line:#233A2B;
+  --accent:#FCDCAC; --on-accent:#0A2C18; --soft:#122A1B; --ok:#9CD3AE; --warn-bg:#3A2C10; --warn:#FFD98A; --err:#FF9A8F; --wa:#2E9E67; color-scheme:dark } }
+:root[data-theme="dark"]{
+  --bg:#06140B; --panel:#0D2015; --ink:#EDE6D6; --muted:#A9B1A6; --line:#233A2B;
+  --accent:#FCDCAC; --on-accent:#0A2C18; --soft:#122A1B; --ok:#9CD3AE; --warn-bg:#3A2C10; --warn:#FFD98A; --err:#FF9A8F; --wa:#2E9E67; color-scheme:dark }
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.75}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--forest)}
+.wrap{max-width:1120px;margin-inline:auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+h1,h2,h3{font-family:var(--display);line-height:1.35;margin:0;text-wrap:balance}
+p{margin:0}
+button{font:inherit;cursor:pointer}
+a{color:inherit}
+svg{flex:none}
+:focus-visible{outline:3px solid var(--cream);outline-offset:2px}
+main :focus-visible,.drawer :focus-visible{outline-color:var(--ok)}
+.num{font-variant-numeric:tabular-nums;direction:ltr;unicode-bidi:isolate}
+[id]{scroll-margin-top:calc(76px + env(safe-area-inset-top,0px))}
+
+.test{background:var(--warn-bg);color:var(--warn);font-size:14px;text-align:center;font-weight:600}
+.test .wrap{padding-block:8px}
+.note{background:var(--forest-deep);color:var(--on-forest);font-size:14px;text-align:center}
+.note .wrap{padding-block:7px}
+header.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:9;background:var(--forest);color:var(--on-forest);box-shadow:0 1px 0 rgba(252,220,172,.12)}
+header.top .wrap{display:flex;align-items:center;justify-content:space-between;gap:12px;padding-block:8px}
+.brand{display:flex;align-items:center;text-decoration:none}
+.brand img{height:48px;width:auto;display:block}
+nav.links{display:flex;gap:24px;font-size:15px}
+nav.links a{text-decoration:none;opacity:.88;padding-block:6px;border-bottom:2px solid transparent}
+nav.links a:hover{opacity:1;border-color:var(--cream)}
+.cartbtn{display:flex;align-items:center;gap:8px;background:var(--cream);color:var(--forest);border:0;border-radius:999px;padding:8px 16px 8px 10px;font-weight:600;min-height:42px}
+.cartbtn .count{background:var(--forest);color:var(--cream);border-radius:999px;min-width:24px;height:24px;display:inline-flex;align-items:center;justify-content:center;font-size:13px;padding-inline:6px}
+@media (max-width:720px){nav.links{display:none}}
+
+.hero{background-color:var(--forest);color:var(--on-forest);
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='130' height='130'%3E%3Cpath d='M65 12C92 38 92 92 65 118C38 92 38 38 65 12ZM65 12V118' fill='none' stroke='%23FCDCAC' stroke-opacity='.06' stroke-width='1.4'/%3E%3C/svg%3E")}
+.hero .wrap{display:grid;grid-template-columns:1.05fr .95fr;gap:40px;align-items:center;padding-block:44px 52px}
+.eyebrow{display:inline-flex;align-items:center;gap:8px;border:1px solid rgba(252,220,172,.35);border-radius:999px;padding:3px 14px;font-size:14px;color:var(--cream)}
+.hero h1{font-size:clamp(38px,6.2vw,64px);color:var(--cream);margin-top:14px}
+.hero p.lead{font-size:18.5px;max-width:36ch;margin-top:12px;opacity:.92}
+.hero .cta{display:flex;flex-wrap:wrap;gap:10px;margin-top:24px}
+.hero .fig{position:relative;justify-self:end;width:100%;max-width:420px}
+.hero .fig img{border-radius:26px;aspect-ratio:4/5;object-fit:cover;width:100%;display:block;box-shadow:0 24px 60px rgba(0,0,0,.35)}
+.chip{position:absolute;bottom:16px;inset-inline-start:-14px;background:var(--cream);color:var(--forest);border-radius:14px;padding:8px 16px;font-weight:700;box-shadow:0 10px 24px rgba(0,0,0,.25);line-height:1.4}
+.chip small{display:block;font-weight:500;font-size:13px}
+@media (max-width:800px){.hero .wrap{grid-template-columns:1fr;gap:26px;padding-block:28px 34px}.hero .fig{justify-self:stretch;max-width:100%}.hero .fig img{aspect-ratio:4/3}.chip{inset-inline-start:12px}}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border-radius:999px;padding:11px 24px;font-weight:600;text-decoration:none;border:1.5px solid transparent;min-height:48px;text-align:center}
+.btn.cream{background:var(--cream);color:var(--forest)}
+.btn.ghost{border-color:rgba(252,220,172,.5);color:var(--cream);background:transparent}
+.btn.primary{background:var(--accent);color:var(--on-accent)}
+.btn.outline{border-color:var(--line);background:var(--panel);color:var(--ink)}
+.btn.wa{background:var(--wa);color:#fff}
+.btn.block{width:100%}
+.btn[aria-disabled="true"]{opacity:.5}
+.btn:hover{filter:brightness(1.06)}
+
+.perks{border-bottom:1px solid var(--line);background:var(--panel)}
+.perks .wrap{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;padding-block:18px}
+.perk{display:flex;gap:12px;align-items:center;font-size:14.5px;color:var(--muted);line-height:1.5}
+.perk b{display:block;color:var(--ink);font-size:15.5px}
+.perk .ic{width:44px;height:44px;border-radius:12px;background:var(--soft);color:var(--ok);display:flex;align-items:center;justify-content:center}
+@media (max-width:700px){.perks .wrap{grid-template-columns:1fr;gap:12px}}
+
+section.block .wrap{padding-block:48px}
+.head{margin-bottom:22px}
+.head h2{font-size:clamp(28px,4vw,36px)}
+.head p{color:var(--muted);margin-top:2px}
+
+.pdp{display:grid;grid-template-columns:1fr 1fr;gap:36px;align-items:start}
+@media (max-width:820px){.pdp{grid-template-columns:1fr;gap:20px}}
+.gal .main{border-radius:var(--r);overflow:hidden;background:var(--soft);border:1px solid var(--line)}
+.gal .main img{width:100%;aspect-ratio:1;object-fit:cover;display:block}
+.thumbs{display:flex;gap:10px;margin-top:10px}
+.thumbs button{border:2px solid transparent;padding:0;border-radius:12px;overflow:hidden;background:none;width:72px;height:72px;opacity:.75}
+.thumbs button[aria-current="true"]{border-color:var(--accent);opacity:1}
+.thumbs img{width:100%;height:100%;object-fit:cover;display:block}
+.buy{display:flex;flex-direction:column;gap:14px;min-width:0}
+.stock{display:inline-flex;align-items:center;gap:6px;color:var(--ok);font-weight:600;font-size:14.5px}
+.stock::before{content:"";width:8px;height:8px;border-radius:50%;background:currentColor}
+.buy h2{font-size:clamp(28px,4vw,38px)}
+.price{font-weight:700;font-size:30px;line-height:1.2}
+.price small{font-weight:500;font-size:14px;color:var(--muted)}
+.buy .desc{color:var(--muted)}
+.specs{display:grid;grid-template-columns:auto 1fr;gap:4px 16px;margin:0;font-size:15px}
+.specs dt{color:var(--muted)}.specs dd{margin:0;font-weight:500}
+.packs{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.pack{background:var(--panel);border:1.5px solid var(--line);border-radius:14px;padding:10px 8px;text-align:center;color:var(--ink);line-height:1.5}
+.pack b{display:block;font-size:16px}
+.pack span{font-size:13.5px;color:var(--muted)}
+.pack em{display:block;font-style:normal;font-size:12.5px;color:var(--ok);font-weight:600}
+.pack[aria-pressed="true"]{border-color:var(--accent);box-shadow:inset 0 0 0 1px var(--accent)}
+.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.qty{display:inline-flex;align-items:center;border:1.5px solid var(--line);border-radius:999px;background:var(--panel)}
+.qty button{width:44px;height:44px;border:0;background:transparent;color:var(--ink);font-size:22px;line-height:1;border-radius:999px}
+.qty output{min-width:30px;text-align:center;font-weight:600}
+.sumline{display:flex;justify-content:space-between;align-items:baseline;background:var(--soft);border-radius:12px;padding:10px 14px}
+.sumline b{font-size:20px}
+.cta2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+@media (max-width:420px){.cta2{grid-template-columns:1fr}}
+.fine{font-size:13.5px;color:var(--muted)}
+
+.soon{background:var(--soft)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:18px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);overflow:hidden;display:flex;flex-direction:column}
+.card .ph{position:relative;aspect-ratio:5/3;background-color:var(--forest);color:var(--cream);display:flex;align-items:center;justify-content:center;font-family:var(--display);font-size:26px;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='90' height='90'%3E%3Cpath d='M45 8C64 26 64 64 45 82C26 64 26 26 45 8ZM45 8V82' fill='none' stroke='%23FCDCAC' stroke-opacity='.12' stroke-width='1.2'/%3E%3C/svg%3E")}
+.card .in{padding:14px 16px 16px;display:flex;flex-direction:column;gap:6px;flex:1}
+.card h3{font-family:var(--body);font-size:17px;font-weight:600}
+.card .sub{color:var(--muted);font-size:14.5px;flex:1}
+.card .btn{margin-top:8px;min-height:44px;padding:8px 16px}
+
+.brew{display:grid;grid-template-columns:minmax(0,320px) 1fr;gap:36px;align-items:center}
+@media (max-width:760px){.brew{grid-template-columns:1fr;gap:20px}.brew .vid{max-width:320px;margin-inline:auto}}
+.vid{border-radius:22px;overflow:hidden;background:var(--forest);aspect-ratio:9/16;width:100%;box-shadow:0 18px 44px rgba(0,0,0,.18)}
+.vid video{width:100%;height:100%;object-fit:cover;display:block}
+ol.steps{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:12px;counter-reset:s}
+ol.steps li{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:14px 16px;counter-increment:s;display:flex;gap:14px;align-items:center}
+ol.steps li::before{content:counter(s,arabic-indic);flex:none;width:42px;height:42px;border-radius:50%;background:var(--forest);color:var(--cream);display:flex;align-items:center;justify-content:center;font-family:var(--display);font-size:22px}
+ol.steps b{display:block}
+ol.steps span{color:var(--muted);font-size:14.5px}
+.more{margin-top:16px;font-size:15px}
+
+.band{background:var(--forest);color:var(--on-forest)}
+.band .wrap{display:flex;gap:20px;justify-content:space-between;align-items:center;flex-wrap:wrap;padding-block:36px}
+.band h2{color:var(--cream);font-size:30px}
+.band p{opacity:.9;max-width:52ch}
+
+.faq{max-width:760px}
+details{border-bottom:1px solid var(--line);padding:14px 0}
+summary{font-weight:600;cursor:pointer;font-size:17px}
+details p{color:var(--muted);margin-top:8px}
+
+footer{background:var(--forest-deep);color:var(--on-forest);font-size:14.5px}
+footer .wrap{padding-block:30px;display:grid;grid-template-columns:1.2fr 1fr 1fr;gap:24px}
+@media (max-width:700px){footer .wrap{grid-template-columns:1fr}}
+footer img{height:60px}
+footer h3{font-family:var(--body);font-size:15px;color:var(--cream);margin-bottom:6px}
+footer ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:4px}
+footer a{text-decoration:none;opacity:.88}footer a:hover{opacity:1;text-decoration:underline}
+.copy{border-top:1px solid rgba(252,220,172,.14)}
+.copy .wrap{display:block;padding-block:12px;font-size:13.5px;opacity:.75}
+
+.fab{position:fixed;z-index:8;inset-inline-start:max(16px,env(safe-area-inset-left,0px));bottom:calc(16px + env(safe-area-inset-bottom,0px));width:56px;height:56px;border-radius:50%;background:var(--wa);color:#fff;display:flex;align-items:center;justify-content:center;box-shadow:0 10px 26px rgba(0,0,0,.28)}
+.bar{position:fixed;z-index:8;inset:auto 0 0;background:var(--panel);border-top:1px solid var(--line);box-shadow:0 -8px 24px rgba(0,0,0,.08);
+  padding:10px max(16px,env(safe-area-inset-right,0px)) calc(10px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px));display:flex;gap:12px;align-items:center;justify-content:space-between}
+.bar .t{line-height:1.4}.bar .t b{display:block;font-size:17px}.bar .t span{font-size:13.5px;color:var(--muted)}
+.hasbar .fab{bottom:calc(86px + env(safe-area-inset-bottom,0px))}
+.hasbar footer{padding-bottom:76px}
+
+.scrim{position:fixed;inset:0;background:rgba(3,10,6,.55);z-index:20}
+.drawer{position:fixed;top:0;bottom:0;inset-inline-end:0;width:min(460px,100%);background:var(--bg);z-index:21;display:flex;flex-direction:column;
+  padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);box-shadow:0 0 40px rgba(0,0,0,.3)}
+.drawer .hd{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;background:var(--panel)}
+.drawer .hd h2{font-size:24px}
+.x{border:1px solid var(--line);background:var(--panel);color:var(--ink);border-radius:999px;width:42px;height:42px;font-size:18px}
+.prog{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;padding:0 16px 12px;background:var(--panel);border-bottom:1px solid var(--line);font-size:13px;color:var(--muted);text-align:center}
+.prog div{border-top:3px solid var(--line);padding-top:5px}
+.prog div.on{border-color:var(--accent);color:var(--ink);font-weight:600}
+.drawer .body{flex:1;overflow:auto;padding:16px;display:flex;flex-direction:column;gap:14px}
+.drawer .foot{border-top:1px solid var(--line);background:var(--panel);padding:14px 16px;display:flex;flex-direction:column;gap:10px}
+.line{display:grid;grid-template-columns:68px 1fr auto;gap:12px;align-items:center;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:10px}
+.line img{width:68px;height:68px;border-radius:10px;object-fit:cover}
+.line .t{font-weight:600;font-size:15px;line-height:1.5}
+.line .p{color:var(--muted);font-size:14px}
+.line .qty button{width:38px;height:38px}
+.rm{border:0;background:transparent;color:var(--muted);font-size:13px;text-decoration:underline;padding:4px 0}
+.sum{display:flex;justify-content:space-between;gap:12px;font-size:15px}
+.sum.total{font-weight:700;font-size:18px}
+.hint{font-size:13.5px;color:var(--muted)}
+.free{background:var(--soft);border-radius:12px;padding:10px 12px;font-size:14px}
+.free .track{height:6px;border-radius:99px;background:var(--line);margin-top:8px;overflow:hidden}
+.free .track i{display:block;height:100%;background:var(--ok);border-radius:99px}
+.free.ok{color:var(--ok);font-weight:600}
+.empty{text-align:center;color:var(--muted);padding:48px 10px}
+form.co{display:flex;flex-direction:column;gap:12px}
+.f{display:flex;flex-direction:column;gap:4px}
+.f label{font-size:14px;font-weight:600}
+.f input,.f textarea{font:inherit;color:var(--ink);background:var(--panel);border:1.5px solid var(--line);border-radius:12px;padding:11px 12px;width:100%}
+.f textarea{min-height:70px;resize:vertical}
+.f .lab{font-size:14px;font-weight:600}
+.pays{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.payopt{display:flex;align-items:center;gap:8px;border:1.5px solid var(--line);border-radius:12px;padding:10px 12px;background:var(--panel);font-weight:500;cursor:pointer}
+.payopt input{width:18px;height:18px;accent-color:var(--ok);padding:0;flex:none}
+.payopt:has(input:checked){border-color:var(--accent);box-shadow:inset 0 0 0 1px var(--accent)}
+.f .e{color:var(--err);font-size:13px}
+.f.bad input{border-color:var(--err)}
+.pv{white-space:pre-wrap;background:var(--panel);border:1px dashed var(--line);border-radius:12px;padding:12px;font-size:14px;line-height:1.85;user-select:all}
+.done{text-align:center;display:flex;flex-direction:column;gap:10px;align-items:center;padding-top:10px}
+.done .big{width:64px;height:64px;border-radius:50%;background:var(--wa);color:#fff;display:flex;align-items:center;justify-content:center}
+.done h3{font-size:24px}
+.ref{font-weight:700;background:var(--soft);border-radius:999px;padding:2px 14px}
+.toast{position:fixed;z-index:30;bottom:calc(96px + env(safe-area-inset-bottom,0px));left:50%;transform:translateX(-50%);background:var(--forest);color:var(--cream);padding:10px 20px;border-radius:999px;font-weight:600;box-shadow:0 8px 24px rgba(0,0,0,.25);max-width:calc(100% - 32px);text-align:center}
+@media (prefers-reduced-motion:no-preference){.drawer{animation:in .22s ease-out}@keyframes in{from{transform:translateX(-24px);opacity:.6}}}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+</style></head><body>
+
+<div dir="rtl" lang="ar" id="app">
+<div class="test" id="testbar" hidden><div class="wrap">وضع تجريبي: رقم الواتساب لم يُضف بعد، فالطلبات لا تصل لأحد.</div></div>
+<div class="note"><div class="wrap">شحن مجاني للطلبات فوق <span class="num">200</span> ر.س داخل السعودية</div></div>
+<header class="top"><div class="wrap">
+  <a class="brand" href="#top" aria-label="مرسّخ"><img src="img/mark.png" alt="مرسّخ Morassakh"></a>
+  <nav class="links" aria-label="أقسام المتجر"><a href="#product">المنتج</a><a href="#brew">طريقة التحضير</a><a href="#wholesale">الجملة</a><a href="#faq">أسئلة شائعة</a></nav>
+  <button class="cartbtn" id="openCart" type="button">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 7h13l-1.4 8.2a2 2 0 0 1-2 1.8H9.4a2 2 0 0 1-2-1.8L6 7Zm0 0-.6-2.6A1 1 0 0 0 4.4 3.6H3"/><circle cx="9.5" cy="20" r="1"/><circle cx="15.5" cy="20" r="1"/></svg>
+    السلة <span class="count num" id="count">0</span></button>
+</div></header>
+
+<main id="top">
+<section class="hero"><div class="wrap">
+  <div>
+    <span class="eyebrow">شاي مرسّخ · <span class="num">Morassakh</span></span>
+    <h1>شاي سموار بتوليفة خاصة</h1>
+    <p class="lead">وتجربة مختلفة. توليفة معمولة للسموار، تتخدّر على مهلها وتنصبّ في الاستكانة بلون غامق.</p>
+    <div class="cta"><a class="btn cream" href="#product">اطلب الآن</a><a class="btn ghost" href="#brew">طريقة التحضير</a></div>
+  </div>
+  <div class="fig">
+    <img src="img/pour.jpg" alt="صبّ شاي مرسّخ من البراد في الاستكانة وخلفه كيس مرسّخ">
+    <div class="chip"><span class="num">30</span> ر.س<small>كيس <span class="num">200</span> جم</small></div>
+  </div>
+</div></section>
+
+<div class="perks"><div class="wrap">
+  <div class="perk"><span class="ic"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20l1.3-4.2A8 8 0 1 1 8.4 19L4 20Z"/><path d="M9 10.5c.5 2 2.3 3.800 4.500 4.500"/></svg></span><div><b>اطلب من الواتساب</b>سلّتك توصلنا برسالة جاهزة</div></div>
+  <div class="perk"><span class="ic"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7h11v9H3zM14 10h4l3 3v3h-7z"/><circle cx="7" cy="18" r="1.6"/><circle cx="17" cy="18" r="1.6"/></svg></span><div><b>شحن داخل السعودية</b>ومجاني فوق <span class="num">200</span> ر.س</div></div>
+  <div class="perk"><span class="ic"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h12v18l-3-2-3 2-3-2-3 2z"/><path d="M9 9h6M9 13h4"/></svg></span><div><b>السعر نهائي</b>اللي تشوفه هو اللي تدفعه</div></div>
+</div></div>
+
+<section class="block" id="product"><div class="wrap">
+  <div class="pdp">
+    <div class="gal"><div class="main"><img id="gMain" alt=""></div><div class="thumbs" id="gThumbs"></div></div>
+    <div class="buy">
+      <span class="stock">متوفر</span>
+      <h2 id="pName"></h2>
+      <div class="price" id="pPrice"></div>
+      <p class="desc" id="pDesc"></p>
+      <dl class="specs" id="pSpecs"></dl>
+      <div>
+        <div class="fine" style="margin-bottom:6px">اختر الكمية</div>
+        <div class="packs" id="packs"></div>
+      </div>
+      <div class="row" style="justify-content:space-between">
+        <div class="qty"><button type="button" id="qMinus" aria-label="أقل">−</button><output id="qOut" class="num">1</output><button type="button" id="qPlus" aria-label="أكثر">+</button></div>
+        <div class="sumline" style="flex:1"><span>المجموع</span><b id="qTotal"></b></div>
+      </div>
+      <div class="cta2">
+        <button class="btn outline" type="button" id="addBtn">أضف للسلة</button>
+        <button class="btn primary" type="button" id="buyBtn">اطلب الآن</button>
+      </div>
+      <p class="fine" id="shipNote"></p>
+    </div>
+  </div>
+</div></section>
+
+<section class="block soon"><div class="wrap">
+  <div class="head"><h2>قريباً من مرسّخ</h2><p>نجهّزها الحين، واضغط «نبّهني» ونراسلك أول ما تتوفر.</p></div>
+  <div class="grid" id="soonGrid"></div>
+</div></section>
+
+<section class="block" id="brew"><div class="wrap">
+  <div class="head"><h2>طريقة الشاهي بالسموار</h2><p>أربع خطوات، وشوفها بالفيديو.</p></div>
+  <div class="brew">
+    <div class="vid"><video id="brewVid" src="brew.mp4" poster="img/poster.jpg" muted loop playsinline autoplay preload="auto" controls aria-label="فيديو طريقة تحضير شاي مرسّخ بالسموار"></video></div>
+    <div>
+      <ol class="steps">
+        <li><div><b>سخّن الماء في السموار</b><span>لين يغلي.</span></div></li>
+        <li><div><b>حط شاي مرسّخ في البراد</b><span>بالملعقة من الكيس.</span></div></li>
+        <li><div><b>اسكب عليه الماء الحار</b><span>من السموار للبراد.</span></div></li>
+        <li><div><b>ركّبه فوق السموار</b><span>وخلّه يتخدّر.</span></div></li>
+      </ol>
+      <p class="more">باقي المقاطع في حسابنا <span class="num">@morassakh</span> على <a href="https://www.tiktok.com/@morassakh" target="_blank" rel="noopener">تيك توك</a> و<a href="https://www.instagram.com/morassakh" target="_blank" rel="noopener">إنستقرام</a></p>
+    </div>
+  </div>
+</div></section>
+
+<section class="band" id="wholesale"><div class="wrap">
+  <div><h2>طلبات الجملة</h2><p>للمحلات والمقاهي والمكاتب والمناسبات. أرسل لنا الكمية اللي تحتاجها ونرد عليك بالسعر.</p></div>
+  <a class="btn cream" id="waWholesale" target="_blank" rel="noopener" href="#">اطلب عرض سعر الجملة</a>
+</div></section>
+
+<section class="block" id="faq"><div class="wrap">
+  <div class="head"><h2>أسئلة شائعة</h2></div>
+  <div class="faq">
+    <details open><summary>كيف أطلب؟</summary><p>اختر الكمية واضغط «اطلب الآن»، اكتب اسمك ومدينتك وعنوانك، ثم «أرسل الطلب على الواتساب». توصلنا رسالة فيها طلبك كامل ونأكده لك.</p></details>
+    <details><summary>كيف الدفع؟</summary><p>تختار عند إتمام الطلب: تحويل بنكي ونرسل لك بيانات الحساب على الواتساب بعد تأكيد الطلب، أو الدفع عند الاستلام.</p></details>
+    <details><summary>كم الشحن ولوين توصلون؟</summary><p>نشحن داخل السعودية. الشحن مجاني للطلبات فوق 200 ر.س، وأقل من كذا نحسب لك رسوم الشحن عند تأكيد الطلب.</p></details>
+    <details><summary>كم وزن الكيس وكم سعره؟</summary><p>الكيس 200 جرام بسعر 30 ر.س.</p></details>
+    <details><summary>هل بياناتي تنحفظ في الموقع؟</summary><p>لا. اسمك وعنوانك ينحطون في رسالة الواتساب اللي ترسلها أنت، ويبقون في متصفحك بس عشان ما تعيد كتابتهم.</p></details>
+  </div>
+</div></section>
+<section class="block soon" id="policies"><div class="wrap">
+  <div class="head"><h2>سياسات المتجر</h2><p>نكتبها لك بوضوح قبل ما تطلب.</p></div>
+  <div class="faq">
+    <details><summary>الشحن والتوصيل</summary><p>نشحن داخل السعودية عن طريق شركات الشحن. الشحن مجاني للطلبات فوق 200 ر.س، وأقل من كذا نبلغك برسوم الشحن عند تأكيد الطلب وقبل الدفع. نرسل لك رقم التتبع على الواتساب بعد الشحن.</p></details>
+    <details><summary>الدفع</summary><p>طريقتين: تحويل بنكي، ونرسل لك بيانات الحساب على الواتساب بعد تأكيد الطلب ونجهّز طلبك بعد وصول المبلغ. أو الدفع عند الاستلام. الأسعار نهائية بدون أي إضافات غير الشحن.</p></details>
+    <details><summary>الاستبدال والاسترجاع</summary><p>لك حق الاستبدال أو الاسترجاع إذا وصلك منتج غير اللي طلبته، أو وصل الكيس تالف أو مفتوح. وتقدر تلغي طلبك إذا الكيس بحالته الأصلية وما انفتح. ما نقبل الاسترجاع بعد فتح الكيس، ولا بسبب اختلاف الذوق. أرسل طلبك على الواتساب خلال 3 أيام من الاستلام مع رقم الطلب وصورة واضحة. إذا الخطأ منا أو المنتج تالف نتحمل الشحن كامل، ونرجّع المبلغ بنفس طريقة الدفع بعد اعتماد الطلب. والطلب اللي ما انشحن يتلغى ويرجع مبلغه كامل.</p></details>
+    <details><summary>الخصوصية</summary><p>نأخذ اسمك ورقم جوالك وعنوانك عشان ننفذ طلبك ونوصله فقط. ما نبيع بياناتك، ونشاركها بس مع شركة الشحن لإتمام التوصيل. الموقع نفسه ما يحفظ بياناتك عندنا، هي تنرسل في رسالة الواتساب وتبقى في متصفحك. وتقدر تطلب تعديلها أو حذفها برسالة على الواتساب.</p></details>
+    <details><summary>الشكاوى والاقتراحات</summary><p>راسلنا على الواتساب برقم طلبك ونرد عليك بأسرع وقت.</p></details>
+  </div>
+</div></section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div><img src="img/mark.png" alt="مرسّخ"><p style="margin-top:8px;opacity:.85">شاي سموار بتوليفة خاصة وتجربة مختلفة.</p></div>
+    <div><h3>المتجر</h3><ul><li><a href="#product">شاي مرسّخ 200 جم</a></li><li><a href="#brew">طريقة التحضير</a></li><li><a href="#wholesale">طلبات الجملة</a></li><li><a href="#faq">أسئلة شائعة</a></li><li><a href="#policies">سياسات المتجر</a></li><li><a href="track.html">تتبع طلبك</a></li></ul></div>
+    <div><h3>تواصل معنا</h3><ul><li>تيك توك: <a href="https://www.tiktok.com/@morassakh" target="_blank" rel="noopener"><span class="num">@morassakh</span></a></li><li>إنستقرام: <a href="https://www.instagram.com/morassakh" target="_blank" rel="noopener"><span class="num">@morassakh</span></a></li><li id="waShow"></li></ul></div>
+  </div>
+  <div class="copy"><div class="wrap">© <span class="num">2026</span> شاي مرسّخ | <span class="num">Morassakh</span></div></div>
+</footer>
+
+<a class="fab" id="fab" target="_blank" rel="noopener" href="#" aria-label="راسلنا على الواتساب"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20l1.3-4.2A8 8 0 1 1 8.4 19L4 20Z"/><path d="M9 10.500c.5 2 2.300 3.800 4.500 4.500"/></svg></a>
+<div class="bar" id="bar" hidden><div class="t"><b id="barTotal"></b><span id="barCount"></span></div><button class="btn primary" type="button" id="barGo">إتمام الطلب</button></div>
+
+<div class="scrim" id="scrim" hidden></div>
+<aside class="drawer" id="drawer" hidden aria-label="السلة">
+  <div class="hd"><h2 id="dTitle">السلة</h2><button class="x" type="button" id="closeCart" aria-label="إغلاق">✕</button></div>
+  <div class="prog" id="prog"><div data-p="cart">السلة</div><div data-p="form">بياناتك</div><div data-p="done">الواتساب</div></div>
+  <div class="body" id="dBody"></div>
+  <div class="foot" id="dFoot"></div>
+</aside>
+<div class="toast" id="toast" hidden role="status"></div>
+</div>
+
+<script>
+/* ====== الإعدادات: عدّل هنا فقط ====== */
+const WA_NUMBER = "966549305664";            // رقم الواتساب بالصيغة الدولية بدون + مثل 9665XXXXXXXX
+const FREE_SHIP = 200;           // حد الشحن المجاني بالريال
+const GA_ID = "";                // للنسخة المستضافة فقط: رقم قياس Google Analytics مثل G-XXXXXXX
+const IMG = {set:"img/set.jpg", bag:"img/bag.jpg", glass:"img/glass.jpg", leaves:"img/leaves.jpg"};
+const PRODUCTS = [
+  {id:"bag200", name:"شاي مرسّخ · كيس 200 جم", short:"شاي مرسّخ 200 جم", price:30, imgs:["bag","leaves","set","glass"],
+   desc:"توليفة مرسّخ الخاصة من الشاي، معمولة للتحضير على السموار.",
+   specs:[["الوزن","200 جرام"],["التحضير","على السموار أو البراد"],["الكيس","بسحّاب يقفل بعد الفتح"]], packs:[1,3,7]},
+  {id:"box-open", name:"بوكس الافتتاح", sub:"براد تركي، سخان ماء، شاي 400 جم، و4 استكانات", soon:true},
+  {id:"bag-travel", name:"شنطة الرحلات", sub:"عدّة الشاهي كاملة للطلعات والبر", soon:true},
+  {id:"sachet40", name:"ظرف براد 1 لتر · 40 جم", sub:"جرعة جاهزة لبراد واحد", soon:true}
+];
+/* ====================================== */
+const $ = s => document.querySelector(s);
+const esc = s => String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const money = n => '<span class="num">' + n + '</span> ر.س';
+const byId = id => PRODUCTS.find(p => p.id === id);
+const P = PRODUCTS.find(p => !p.soon);
+const get = (k, d) => { try { const v = JSON.parse(localStorage.getItem(k)); return v == null ? d : v; } catch (e) { return d; } };
+const put = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} };
+let cart = get("mk_cart", {}) || {};
+for (const k of Object.keys(cart)) { const p = byId(k); if (!p || p.soon || !(cart[k] > 0)) delete cart[k]; }
+let form = Object.assign({name:"", phone:"", city:"", addr:"", notes:"", pay:"تحويل بنكي"}, get("mk_form", {}));
+let ref = get("mk_ref", "");
+let step = "cart", touched = false, q = 1;
+const save = () => { put("mk_cart", cart); put("mk_form", form); put("mk_ref", ref); };
+const count = () => Object.values(cart).reduce((a, b) => a + b, 0);
+const total = () => Object.entries(cart).reduce((a, [k, n]) => a + byId(k).price * n, 0);
+const waLink = text => "https://wa.me/" + WA_NUMBER + "?text=" + encodeURIComponent(text);
+const bags = n => n === 1 ? "كيس واحد" : n === 2 ? "كيسين" : n <= 10 ? n + " أكياس" : n + " كيس";
+let SRC = ""; try { SRC = (new URLSearchParams(location.search).get("src") || "").replace(/[^\w\u0600-\u06FF -]/g, "").slice(0, 30); } catch (e) {}
+const newRef = () => { const d = new Date(); return "MK-" + String(d.getMonth() + 1).padStart(2, "0") + String(d.getDate()).padStart(2, "0") + "-" + String(Math.floor(1000 + Math.random() * 9000)); };
+function toast(msg){ const t = $("#toast"); t.textContent = msg; t.hidden = false; clearTimeout(toast.t); toast.t = setTimeout(() => t.hidden = true, 2200); }
+
+/* product block */
+function setImg(k){ $("#gMain").src = IMG[k]; $("#gMain").alt = P.name; document.querySelectorAll("#gThumbs button").forEach(b => b.setAttribute("aria-current", b.dataset.k === k)); }
+function renderProduct(){
+  $("#pName").textContent = P.name; $("#pPrice").innerHTML = money(P.price) + " <small>السعر نهائي</small>"; $("#pDesc").textContent = P.desc;
+  $("#pSpecs").innerHTML = P.specs.map(([a, b]) => "<dt>" + esc(a) + "</dt><dd>" + esc(b) + "</dd>").join("");
+  $("#gThumbs").innerHTML = P.imgs.map((k, i) => `<button type="button" data-k="${k}" aria-label="صورة ${i + 1}"><img src="${IMG[k]}" alt=""></button>`).join("");
+  $("#gThumbs").onclick = ev => { const b = ev.target.closest("button"); if (b) setImg(b.dataset.k); }; setImg(P.imgs[0]);
+  $("#packs").innerHTML = P.packs.map(n => `<button class="pack" type="button" data-pack="${n}" aria-pressed="false"><b>${bags(n)}</b><span>${money(n * P.price)}</span>${n * P.price >= FREE_SHIP ? "<em>شحن مجاني</em>" : ""}</button>`).join("");
+  renderQty();
+}
+function renderQty(){ $("#qOut").textContent = q; $("#qTotal").innerHTML = money(q * P.price);
+  document.querySelectorAll(".pack").forEach(b => b.setAttribute("aria-pressed", String(+b.dataset.pack === q)));
+  const left = FREE_SHIP - q * P.price; $("#shipNote").innerHTML = left <= 0 ? "هذي الكمية شحنها مجاني." : "أضف " + bags(Math.ceil(left / P.price)) + " زيادة وتاخذ شحن مجاني.";
+}
+function renderSoon(){
+  $("#soonGrid").innerHTML = PRODUCTS.filter(p => p.soon).map(p => `
+    <article class="card"><div class="ph">قريباً</div><div class="in"><h3>${esc(p.name)}</h3><div class="sub">${esc(p.sub)}</div>
+    <a class="btn outline" target="_blank" rel="noopener" href="${WA_NUMBER ? waLink("السلام عليكم، نبّهوني إذا توفر: " + p.name) : "#"}" ${WA_NUMBER ? "" : 'aria-disabled="true"'}>نبّهني إذا توفر</a></div></article>`).join("");
+}
+function add(id, n, quiet){ cart[id] = Math.min(99, (cart[id] || 0) + n); save(); renderCount(); if (!quiet) toast("انضاف للسلة"); }
+function renderCount(){ const n = count(); $("#count").textContent = n; const open = !$("#drawer").hidden;
+  $("#bar").hidden = !n || open; $("#app").classList.toggle("hasbar", !!n && !open);
+  $("#barTotal").innerHTML = money(total()); $("#barCount").textContent = bags(n) + " في السلة"; }
+
+/* order */
+function orderText(){
+  const lines = Object.entries(cart).map(([k, n]) => { const p = byId(k); return "• " + p.name + " × " + n + " = " + (p.price * n) + " ر.س"; });
+  const t = total();
+  return ["طلب جديد من متجر مرسّخ 🌱", "رقم الطلب: " + ref, "", ...lines, "", "المجموع: " + t + " ر.س",
+    t >= FREE_SHIP ? "الشحن: مجاني" : "الشحن: يُحسب عند التأكيد", "",
+    "الاسم: " + form.name.trim(), "الجوال: " + form.phone.trim(), "المدينة: " + form.city.trim(), "العنوان: " + form.addr.trim(), "طريقة الدفع: " + form.pay,
+    ...(form.notes.trim() ? ["ملاحظات: " + form.notes.trim()] : []), ...(SRC ? ["المصدر: " + SRC] : [])].join("\n");
+}
+const digits = s => s.replace(/[٠-٩]/g, d => "٠١٢٣٤٥٦٧٨٩".indexOf(d)).replace(/[\s-]/g, "");
+const errs = () => ({
+  name: form.name.trim().length < 2 ? "اكتب اسمك" : "",
+  phone: /^(\+?966|0)?5\d{8}$/.test(digits(form.phone)) ? "" : "اكتب رقم جوال سعودي صحيح مثل 05XXXXXXXX",
+  city: form.city.trim().length < 2 ? "اكتب المدينة" : "",
+  addr: form.addr.trim().length < 4 ? "اكتب الحي والشارع" : ""
+});
+const CITIES = ["الرياض","جدة","مكة المكرمة","المدينة المنورة","الدمام","الخبر","الظهران","الأحساء","الجبيل","الطائف","بريدة","عنيزة","حائل","تبوك","أبها","خميس مشيط","جازان","نجران","ينبع","الخرج"];
+function renderDrawer(){
+  const n = count(), t = total(), body = $("#dBody"), foot = $("#dFoot");
+  if (!n && step !== "done") step = "cart";
+  document.querySelectorAll("#prog div").forEach(d => d.classList.toggle("on", ["cart","form","done"].indexOf(d.dataset.p) <= ["cart","form","done"].indexOf(step)));
+  $("#prog").hidden = !n && step === "cart";
+  if (!n && step === "cart"){ $("#dTitle").textContent = "السلة";
+    body.innerHTML = '<div class="empty">سلّتك فاضية.<br>أضف شاي مرسّخ وكمّل طلبك.</div>';
+    foot.innerHTML = '<button class="btn primary block" type="button" data-close>تسوّق الآن</button>'; return; }
+  const left = FREE_SHIP - t;
+  const sums = `<div class="sum"><span>الشحن</span><span>${t >= FREE_SHIP ? "مجاني" : "يُحسب عند التأكيد"}</span></div>
+    <div class="sum total"><span>المجموع</span><span>${money(t)}</span></div>`;
+  if (step === "cart"){ $("#dTitle").textContent = "السلة";
+    body.innerHTML = Object.entries(cart).map(([k, n]) => { const p = byId(k); return `
+      <div class="line"><img src="${IMG[p.imgs[0]]}" alt=""><div><div class="t">${esc(p.name)}</div><div class="p">${money(p.price)} للكيس</div>
+      <button class="rm" type="button" data-rm="${k}">حذف</button></div>
+      <div><div class="qty"><button type="button" data-dec="${k}" aria-label="أقل">−</button><output class="num">${n}</output><button type="button" data-inc="${k}" aria-label="أكثر">+</button></div>
+      <div class="p" style="text-align:center;margin-top:4px">${money(p.price * n)}</div></div></div>`; }).join("") +
+      `<div class="free ${left <= 0 ? "ok" : ""}">${left <= 0 ? "طلبك شحنه مجاني" : "باقي لك " + money(left) + " وتاخذ شحن مجاني"}<div class="track"><i style="width:${Math.min(100, Math.round(t / FREE_SHIP * 100))}%"></i></div></div>`;
+    foot.innerHTML = sums + '<button class="btn primary block" type="button" data-step="form">إتمام الطلب</button>';
+  } else if (step === "form"){ $("#dTitle").textContent = "بياناتك";
+    if (!ref) { ref = newRef(); save(); }
+    const e = touched ? errs() : {};
+    const f = (k, label, type, ph, ac, extra) => `<div class="f ${e[k] ? "bad" : ""}"><label for="f_${k}">${label}</label>
+      <input id="f_${k}" data-k="${k}" type="${type}" value="${esc(form[k])}" placeholder="${ph}" autocomplete="${ac}" ${extra || ""}>
+      ${e[k] ? '<span class="e">' + e[k] + "</span>" : ""}</div>`;
+    body.innerHTML = `<form class="co" id="co" novalidate>
+      ${f("name", "الاسم", "text", "اسمك الكامل", "name")}
+      ${f("phone", "رقم الجوال", "tel", "05XXXXXXXX", "tel", 'inputmode="tel" dir="ltr" style="text-align:right"')}
+      ${f("city", "المدينة", "text", "مثال: الرياض", "address-level2", 'list="cities"')}
+      <datalist id="cities">${CITIES.map(c => '<option value="' + c + '">').join("")}</datalist>
+      ${f("addr", "الحي والشارع", "text", "الحي، الشارع، رقم المبنى", "street-address")}
+      <div class="f"><span class="lab" id="payLab">طريقة الدفع</span><div class="pays" role="radiogroup" aria-labelledby="payLab">
+        ${["تحويل بنكي", "الدفع عند الاستلام"].map((p, i) => `<label class="payopt"><input type="radio" name="pay" id="f_pay${i}" data-k="pay" value="${p}" ${form.pay === p ? "checked" : ""}><span>${p}</span></label>`).join("")}</div></div>
+      <div class="f"><label for="f_notes">ملاحظات (اختياري)</label><textarea id="f_notes" data-k="notes" placeholder="أي تفاصيل للتوصيل">${esc(form.notes)}</textarea></div>
+      </form><div class="hint">هذي الرسالة اللي بتنرسل لنا على الواتساب:</div><div class="pv" id="pv"></div>`;
+    $("#pv").textContent = orderText();
+    foot.innerHTML = sums + `<a class="btn wa block" id="send" target="_blank" rel="noopener" href="#">أرسل الطلب على الواتساب</a>
+      <button class="btn outline block" type="button" data-step="cart">رجوع للسلة</button>`;
+    syncSend();
+  } else { $("#dTitle").textContent = "كمّل في الواتساب";
+    body.innerHTML = `<div class="done"><div class="big"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20l1.3-4.2A8 8 0 1 1 8.4 19L4 20Z"/><path d="M9 12l2 2 4-4"/></svg></div>
+      <h3>باقي خطوة وحدة</h3><p>انفتح لك الواتساب والرسالة مكتوبة. اضغط «إرسال» هناك عشان يوصلنا طلبك، ونرد عليك بالتأكيد وتفاصيل الدفع.</p>
+      <span class="ref">رقم طلبك: <span class="num">${esc(ref)}</span></span></div>
+      <div class="hint">ما انفتح الواتساب؟ انسخ الرسالة وأرسلها لنا${WA_NUMBER ? ' على <span class="num">+' + WA_NUMBER + "</span>" : ""}:</div><div class="pv" id="pv"></div>`;
+    $("#pv").textContent = orderText();
+    foot.innerHTML = `<button class="btn primary block" type="button" id="copyBtn">انسخ الرسالة</button>
+      <a class="btn outline block" target="_blank" rel="noopener" href="${WA_NUMBER ? waLink(orderText()) : "#"}" ${WA_NUMBER ? "" : 'aria-disabled="true"'}>افتح الواتساب مرة ثانية</a>
+      <button class="btn outline block" type="button" id="newOrder">طلب جديد</button>`;
+  }
+}
+function syncSend(){ const a = $("#send"); if (!a) return; const e = errs(); const ok = WA_NUMBER && !Object.values(e).some(Boolean);
+  a.href = ok ? waLink(orderText()) : "#"; const pv = $("#pv"); if (pv) pv.textContent = orderText(); }
+function openDrawer(s){ step = s || (step === "done" ? "done" : "cart"); renderDrawer(); $("#drawer").hidden = false; $("#scrim").hidden = false; renderCount(); $("#closeCart").focus(); }
+function closeAll(){ $("#drawer").hidden = true; $("#scrim").hidden = true; renderCount(); }
+
+document.addEventListener("click", ev => {
+  if (ev.target.closest('a[aria-disabled="true"]')) { ev.preventDefault(); toast("رقم الواتساب لم يُضف بعد"); return; }
+  if (ev.target.closest("#send")) { touched = true; const e = errs();
+    if (Object.values(e).some(Boolean)) { ev.preventDefault(); renderDrawer(); const bad = document.querySelector(".f.bad input"); if (bad) bad.focus(); return; }
+    if (!WA_NUMBER) { ev.preventDefault(); toast("رقم الواتساب لم يُضف بعد"); return; }
+    syncSend(); setTimeout(() => { step = "done"; renderDrawer(); $("#dBody").scrollTop = 0; }, 350); return; }
+  if (ev.target.closest("#copyBtn")) { const txt = orderText(); const sel = () => { const r = document.createRange(); r.selectNodeContents($("#pv")); const s = getSelection(); s.removeAllRanges(); s.addRange(r); toast("حدّدنا لك الرسالة، انسخها"); };
+    try { navigator.clipboard.writeText(txt).then(() => toast("انتسخت الرسالة"), sel); } catch (e) { sel(); } return; }
+  if (ev.target.closest("#newOrder")) { cart = {}; ref = ""; step = "cart"; touched = false; save(); closeAll(); return; }
+  const t = ev.target.closest("[data-pack],[data-inc],[data-dec],[data-rm],[data-step],[data-close]"); if (!t) return; const d = t.dataset;
+  if (d.pack) { q = +d.pack; renderQty(); }
+  else if (d.inc) { cart[d.inc] = Math.min(99, cart[d.inc] + 1); save(); renderDrawer(); renderCount(); }
+  else if (d.dec) { cart[d.dec]--; if (cart[d.dec] <= 0) delete cart[d.dec]; save(); renderDrawer(); renderCount(); }
+  else if (d.rm) { delete cart[d.rm]; save(); renderDrawer(); renderCount(); }
+  else if (d.step) { step = d.step; renderDrawer(); $("#dBody").scrollTop = 0; }
+  else if ("close" in d) { closeAll(); location.hash = "product"; }
+});
+document.addEventListener("input", ev => { const k = ev.target.dataset && ev.target.dataset.k; if (!k) return; form[k] = ev.target.value; save(); syncSend(); });
+document.addEventListener("submit", ev => ev.preventDefault());
+document.addEventListener("keydown", ev => { if (ev.key === "Escape") closeAll(); });
+$("#openCart").onclick = () => openDrawer();
+$("#barGo").onclick = () => openDrawer("form");
+$("#closeCart").onclick = closeAll; $("#scrim").onclick = closeAll;
+$("#qMinus").onclick = () => { q = Math.max(1, q - 1); renderQty(); };
+$("#qPlus").onclick = () => { q = Math.min(99, q + 1); renderQty(); };
+$("#addBtn").onclick = () => add(P.id, q);
+$("#buyBtn").onclick = () => { if (step === "done") { cart = {}; ref = ""; } cart[P.id] = q; save(); openDrawer("form"); };
+const w = $("#waWholesale"); w.href = WA_NUMBER ? waLink("السلام عليكم، أبي عرض سعر جملة لشاي مرسّخ.\nالكمية المطلوبة: \nاسم المحل/الجهة: \nالمدينة: ") : "#"; if (!WA_NUMBER) w.setAttribute("aria-disabled", "true");
+const fab = $("#fab"); fab.href = WA_NUMBER ? waLink("السلام عليكم، عندي استفسار عن شاي مرسّخ") : "#"; if (!WA_NUMBER) fab.setAttribute("aria-disabled", "true");
+$("#testbar").hidden = !!WA_NUMBER;
+$("#waShow").innerHTML = WA_NUMBER ? 'واتساب: <a target="_blank" rel="noopener" href="' + waLink("السلام عليكم") + '"><span class="num">+' + WA_NUMBER + "</span></a>" : "واتساب: يُضاف قريباً";
+if (matchMedia("(prefers-reduced-motion: reduce)").matches) { const v = $("#brewVid"); v.removeAttribute("autoplay"); v.pause(); }
+{ const v = $("#brewVid"); v.addEventListener("error", () => { v.removeAttribute("controls"); v.removeAttribute("src"); v.load(); }); }
+renderProduct(); renderSoon(); renderCount();
+if (GA_ID) { const g = document.createElement("script"); g.async = true; g.src = "https://www.googletagmanager.com/gtag/js?id=" + GA_ID; document.head.appendChild(g);
+  window.dataLayer = window.dataLayer || []; window.gtag = function(){ dataLayer.push(arguments); }; gtag("js", new Date()); gtag("config", GA_ID);
+  document.addEventListener("click", ev => { const a = ev.target.closest("#send,#addBtn,#buyBtn,#fab,#waWholesale"); if (a) gtag("event", a.id === "send" ? "order_sent_to_whatsapp" : a.id, { value: total() }); }); }
+</script>
+</body></html>

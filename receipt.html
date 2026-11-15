@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex">
+<title>إيصال طلب · مرسّخ</title>
+<link rel="icon" href="img/mark.png">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&family=Noto+Naskh+Arabic:wght@600;700&display=swap">
+<style>
+:root{--forest:#0A2C18;--cream:#FCDCAC;--bg:#FAF6EE;--panel:#fff;--ink:#14231A;--muted:#5B665E;--line:#E3DCCB;--soft:#F1EADB;--ok:#2F6B45;
+  --display:"Noto Naskh Arabic","Geeza Pro",serif;--body:"IBM Plex Sans Arabic","Segoe UI",Tahoma,sans-serif}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--body);font-size:15.5px;line-height:1.7}
+.wrap{max-width:760px;margin-inline:auto;padding:20px 16px 48px;display:flex;flex-direction:column;gap:16px}
+h1{font-family:var(--display);font-size:28px;margin:0}
+p{margin:0}.muted{color:var(--muted);font-size:14px}
+label{font-weight:600;font-size:14px;display:block;margin-bottom:4px}
+textarea,input,select{font:inherit;width:100%;padding:10px 12px;border:1.5px solid var(--line);border-radius:10px;background:var(--panel);color:var(--ink)}
+textarea{min-height:170px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px}
+button{font:inherit;font-weight:600;border:0;border-radius:999px;padding:12px 26px;background:var(--forest);color:var(--cream);cursor:pointer;min-height:48px}
+:focus-visible{outline:3px solid var(--ok);outline-offset:2px}
+.rc{background:#fff;color:#14231A;border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.rc .top{background:#0A2C18;color:#F6EFE0;display:flex;justify-content:space-between;align-items:center;padding:18px 22px;gap:12px}
+.rc .top img{height:64px}
+.rc .top h2{font-family:var(--display);font-size:26px;margin:0;color:#FCDCAC}
+.rc .top span{font-size:14px;direction:ltr;unicode-bidi:isolate}
+.rc .body{padding:20px 22px;display:flex;flex-direction:column;gap:16px}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.k{color:#5B665E;font-size:13px}.v{font-weight:600}
+table{width:100%;border-collapse:collapse}
+th,td{padding:9px 10px;text-align:start;border-bottom:1px solid #E3DCCB}
+th{background:#F1EADB;font-size:13.5px}
+td.n,th.n{text-align:end;font-variant-numeric:tabular-nums;white-space:nowrap}
+.tot{margin-inline-start:auto;min-width:240px}
+.tot div{display:flex;justify-content:space-between;padding:4px 0}
+.tot .g{font-weight:700;font-size:18px;border-top:2px solid #0A2C18;margin-top:4px;padding-top:8px}
+.fine{font-size:13px;color:#5B665E;border-top:1px solid #E3DCCB;padding-top:12px}
+@page{size:A4;margin:14mm}
+@media print{body{background:#fff}.tool{display:none!important}.wrap{padding:0;max-width:none}.rc{border:0}.rc .top,th{-webkit-print-color-adjust:exact;print-color-adjust:exact}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="tool"><h1>إيصال طلب</h1><p class="muted">الصق رسالة الطلب اللي وصلتك على الواتساب، عدّل الشحن وحالة الدفع، ثم اضغط «حفظ PDF» واختر «حفظ كملف PDF» من نافذة الطباعة.</p></div>
+  <div class="tool"><label for="src">رسالة الطلب</label><textarea id="src" placeholder="طلب جديد من متجر مرسّخ 🌱&#10;رقم الطلب: MK-1115-1234&#10;• شاي مرسّخ · كيس 200 جم × 2 = 60 ر.س&#10;المجموع: 60 ر.س&#10;الاسم: ..."></textarea></div>
+  <div class="tool grid">
+    <div><label for="ship">رسوم الشحن (ريال)</label><input id="ship" type="number" min="0" step="0.5" value="0"></div>
+    <div><label for="paid">حالة الدفع</label><select id="paid"><option>بانتظار الدفع</option><option>مدفوع</option><option>الدفع عند الاستلام</option></select></div>
+    <div><label for="date">التاريخ</label><input id="date" type="date"></div>
+  </div>
+  <div class="tool"><button type="button" id="print">حفظ PDF</button></div>
+
+  <div class="rc" id="rc">
+    <div class="top"><div><h2>إيصال طلب</h2><span id="oRef">—</span></div><img src="img/mark.png" alt="مرسّخ Morassakh"></div>
+    <div class="body">
+      <div class="two">
+        <div><div class="k">العميل</div><div class="v" id="oName">—</div><div id="oPhone" dir="ltr" style="text-align:right"></div></div>
+        <div><div class="k">التاريخ</div><div class="v" id="oDate">—</div><div class="k" style="margin-top:6px">العنوان</div><div id="oAddr">—</div></div>
+      </div>
+      <table><thead><tr><th>الصنف</th><th class="n">الكمية</th><th class="n">السعر</th><th class="n">الإجمالي</th></tr></thead><tbody id="oItems"><tr><td colspan="4" class="k">تظهر الأصناف بعد لصق رسالة الطلب.</td></tr></tbody></table>
+      <div class="tot"><div><span>مجموع الأصناف</span><span id="oSub">—</span></div><div><span>الشحن</span><span id="oShip">—</span></div><div class="g"><span>الإجمالي</span><span id="oTotal">—</span></div></div>
+      <div class="two"><div><div class="k">طريقة الدفع</div><div class="v" id="oPay">—</div></div><div><div class="k">حالة الدفع</div><div class="v" id="oPaid">—</div></div></div>
+      <div class="fine">هذا إيصال طلب وليس فاتورة ضريبية. شاي مرسّخ · واتساب <span dir="ltr">+966 54 930 5664</span> · إنستقرام وتيك توك <span dir="ltr">@morassakh</span> · morassakh.com</div>
+    </div>
+  </div>
+</div>
+<script>
+const $ = s => document.querySelector(s);
+const money = n => (Number.isInteger(n) ? n : n.toFixed(2)) + " ر.س";
+const dig = s => String(s).replace(/[٠-٩]/g, d => "٠١٢٣٤٥٦٧٨٩".indexOf(d));
+const MONTHS = ["يناير","فبراير","مارس","أبريل","مايو","يونيو","يوليو","أغسطس","سبتمبر","أكتوبر","نوفمبر","ديسمبر"];
+function field(text, label){ const m = text.match(new RegExp("^\\s*" + label + "\\s*[:：]\\s*(.+)$", "m")); return m ? m[1].trim() : ""; }
+function render(){
+  const text = dig($("#src").value);
+  const items = [...text.matchAll(/^\s*[•\-*]\s*(.+?)\s*[×xX]\s*(\d+)\s*=\s*([\d.]+)/gm)].map(m => ({ name: m[1].trim(), qty: +m[2], total: +m[3] }));
+  const sub = items.reduce((s, i) => s + i.total, 0), ship = Math.max(0, +$("#ship").value || 0);
+  $("#oRef").textContent = field(text, "رقم الطلب") || "—";
+  $("#oName").textContent = field(text, "الاسم") || "—"; $("#oPhone").textContent = field(text, "الجوال");
+  $("#oAddr").textContent = [field(text, "المدينة"), field(text, "العنوان")].filter(Boolean).join("، ") || "—";
+  $("#oPay").textContent = field(text, "طريقة الدفع") || "—"; $("#oPaid").textContent = $("#paid").value;
+  const d = $("#date").value.split("-"); $("#oDate").textContent = d.length === 3 ? (+d[2]) + " " + MONTHS[+d[1] - 1] + " " + d[0] : "—";
+  const tb = $("#oItems"); tb.replaceChildren();
+  if (!items.length){ const tr = document.createElement("tr"), td = document.createElement("td"); td.colSpan = 4; td.className = "k"; td.textContent = "تظهر الأصناف بعد لصق رسالة الطلب."; tr.append(td); tb.append(tr); }
+  for (const i of items){ const tr = document.createElement("tr");
+    [[i.name, ""], [i.qty, "n"], [money(i.total / i.qty), "n"], [money(i.total), "n"]].forEach(([v, c]) => { const td = document.createElement("td"); td.textContent = v; if (c) td.className = c; tr.append(td); }); tb.append(tr); }
+  $("#oSub").textContent = items.length ? money(sub) : "—"; $("#oShip").textContent = ship ? money(ship) : "مجاني";
+  $("#oTotal").textContent = items.length ? money(sub + ship) : "—";
+  document.title = "إيصال طلب " + (field(text, "رقم الطلب") || "") + " · مرسّخ";
+}
+const now = new Date(); $("#date").value = now.getFullYear() + "-" + String(now.getMonth() + 1).padStart(2, "0") + "-" + String(now.getDate()).padStart(2, "0");
+for (const id of ["src", "ship", "paid", "date"]) $("#" + id).addEventListener("input", render);
+$("#paid").addEventListener("change", render);
+$("#print").addEventListener("click", () => window.print());
+render();
+</script>
+</body>
+</html>
