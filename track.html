@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>تتبع طلبك · مرسّخ</title>
-<meta name="description" content="اكتب رقم طلبك من مرسّخ وشوف وين وصل.">
+<meta name="description" content="اكتب رقم طلبك وآخر 4 أرقام من جوالك وشوف وين وصل طلبك من مرسّخ.">
 <link rel="icon" href="img/mark.png">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&family=Noto+Naskh+Arabic:wght@600;700&display=swap">
 <style>
@@ -22,8 +22,9 @@ main .wrap{padding-block:28px 48px;display:flex;flex-direction:column;gap:18px}
 h1{font-family:var(--display);font-size:34px;margin:0;line-height:1.3}
 p{margin:0}
 .muted{color:var(--muted)}
-form{display:flex;gap:8px;flex-wrap:wrap}
-input{flex:1 1 200px;font:inherit;padding:12px 14px;border:1.5px solid var(--line);border-radius:12px;background:var(--panel);color:var(--ink);direction:ltr;text-align:center;letter-spacing:.04em;text-transform:uppercase;min-width:0}
+form{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;align-items:end}
+form label{display:flex;flex-direction:column;gap:4px;font-weight:600;font-size:14px;min-width:0}
+input{font:inherit;font-size:20px;padding:12px 14px;border:1.5px solid var(--line);border-radius:12px;background:var(--panel);color:var(--ink);direction:ltr;text-align:center;letter-spacing:.12em;min-width:0;width:100%;font-variant-numeric:tabular-nums}
 button,.btn{font:inherit;font-weight:600;border:0;border-radius:999px;padding:12px 26px;background:var(--forest);color:var(--cream);cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;min-height:48px}
 .btn.wa{background:var(--wa);color:#fff}
 :focus-visible{outline:3px solid var(--ok);outline-offset:2px}
@@ -47,8 +48,11 @@ dt{color:var(--muted)}dd{margin:0;font-weight:500}
 <body>
 <header><div class="wrap"><a href="./" aria-label="مرسّخ"><img src="img/mark.png" alt="مرسّخ Morassakh"></a><a class="back" href="./">المتجر</a></div></header>
 <main><div class="wrap">
-  <div><h1>تتبع طلبك</h1><p class="muted">اكتب رقم الطلب اللي في رسالة الواتساب، يبدأ بـ MK.</p></div>
-  <form id="f" novalidate><input id="q" name="o" inputmode="latin" autocomplete="off" placeholder="MK-1115-1234" aria-label="رقم الطلب"><button type="submit">تتبع</button></form>
+  <div><h1>تتبع طلبك</h1><p class="muted">اكتب رقم الطلب اللي في رسالة الواتساب، وآخر 4 أرقام من جوالك.</p></div>
+  <form id="f" novalidate>
+    <label for="q">رقم الطلب<input id="q" name="o" inputmode="numeric" autocomplete="off" placeholder="482" maxlength="8"></label>
+    <label for="p">آخر 4 أرقام من الجوال<input id="p" name="p" inputmode="numeric" autocomplete="off" placeholder="5664" maxlength="12"></label>
+    <button type="submit">تتبع</button></form>
   <div class="msg" id="msg" hidden role="status"></div>
   <div class="card" id="card" hidden>
     <div><span class="muted">طلب رقم</span> <span class="ref" id="rRef"></span><div class="state" id="rState"></div></div>
@@ -63,7 +67,9 @@ const TRACK_CSV = "";
 const WA_NUMBER = "966549305664";
 const FLOW = [["جديد","استلمنا طلبك ونأكده معك"],["بانتظار الدفع","ننتظر وصول المبلغ"],["مدفوع","وصل المبلغ ونجهّز طلبك"],["تم الشحن","طلبك مع شركة الشحن"],["مكتمل","وصل الطلب. بالعافية"]];
 const $ = s => document.querySelector(s);
-const norm = s => String(s || "").replace(/[٠-٩]/g, d => "٠١٢٣٤٥٦٧٨٩".indexOf(d)).replace(/\s+/g, "").toUpperCase();
+const digits = s => String(s || "").replace(/[٠-٩]/g, d => "٠١٢٣٤٥٦٧٨٩".indexOf(d)).replace(/[۰-۹]/g, d => "۰۱۲۳۴۵۶۷۸۹".indexOf(d)).replace(/\D/g, "");
+const norm = s => digits(s).replace(/^0+(?=\d)/, "");
+const last4 = s => digits(s).slice(-4);
 function parseCSV(text){ const rows = []; let row = [], cur = "", q = false;
   for (let i = 0; i < text.length; i++){ const c = text[i];
     if (q){ if (c === '"'){ if (text[i + 1] === '"'){ cur += '"'; i++; } else q = false; } else cur += c; }
@@ -81,16 +87,18 @@ function show(o){ $("#msg").hidden = true; $("#rRef").textContent = o["رقم ا
     if (!o[key]) continue; const dt = document.createElement("dt"), dd = document.createElement("dd"); dt.textContent = label; dd.textContent = o[key]; dl.append(dt, dd); }
   $("#card").hidden = false;
   $("#wa").href = "https://wa.me/" + WA_NUMBER + "?text=" + encodeURIComponent("السلام عليكم، أستفسر عن طلبي رقم " + o["رقم الطلب"]); }
-async function track(ref){ ref = norm(ref); if (!ref) return say("اكتب رقم الطلب أول.", true);
+async function track(ref, ph){ ref = norm(ref); ph = last4(ph);
+  if (!ref) return say("اكتب رقم الطلب أول.", true);
+  if (ph.length < 4) return say("اكتب آخر 4 أرقام من جوالك اللي طلبت فيه.", true);
   if (!TRACK_CSV) return say("خدمة التتبع تتفعّل قريباً. راسلنا على الواتساب برقم طلبك ونعطيك حالته.");
   say("نبحث عن طلبك…");
   try { const res = await fetch(TRACK_CSV + (TRACK_CSV.includes("?") ? "&" : "?") + "t=" + Date.now(), { cache: "no-store" }); if (!res.ok) throw new Error(res.status);
     const rows = parseCSV(await res.text()); const head = rows[0].map(h => h.trim());
-    const hit = rows.slice(1).map(r => Object.fromEntries(head.map((h, i) => [h, (r[i] || "").trim()]))).find(o => norm(o["رقم الطلب"]) === ref);
-    hit ? show(hit) : say("ما لقينا طلب بهذا الرقم. تأكد من الرقم، وإذا طلبك جديد ممكن ما انسجّل للحين.", true);
+    const hit = rows.slice(1).map(r => Object.fromEntries(head.map((h, i) => [h, (r[i] || "").trim()]))).find(o => norm(o["رقم الطلب"]) === ref && last4(o["آخر 4 من الجوال"]) === ph);
+    hit ? show(hit) : say("ما لقينا طلب بهذا الرقم والجوال. تأكد منهم، وإذا طلبك جديد ممكن ما انسجّل للحين.", true);
   } catch (e) { say("ما قدرنا نجيب حالة الطلب الحين. جرّب بعد شوي أو راسلنا على الواتساب.", true); } }
-$("#f").addEventListener("submit", ev => { ev.preventDefault(); track($("#q").value); });
-const pre = new URLSearchParams(location.search).get("o"); if (pre){ $("#q").value = norm(pre); track(pre); }
+$("#f").addEventListener("submit", ev => { ev.preventDefault(); track($("#q").value, $("#p").value); });
+const pre = new URLSearchParams(location.search).get("o"); if (pre){ $("#q").value = norm(pre); $("#p").focus(); }
 </script>
 </body>
 </html>

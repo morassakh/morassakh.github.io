@@ -363,7 +363,7 @@ const put = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catc
 let cart = get("mk_cart", {}) || {};
 for (const k of Object.keys(cart)) { const p = byId(k); if (!p || p.soon || !(cart[k] > 0)) delete cart[k]; }
 let form = Object.assign({name:"", phone:"", city:"", addr:"", notes:"", pay:"تحويل بنكي"}, get("mk_form", {}));
-let ref = get("mk_ref", "");
+let ref = get("mk_ref", ""); if (!/^\d{3,}$/.test(String(ref))) ref = "";
 let step = "cart", touched = false, q = 1;
 const save = () => { put("mk_cart", cart); put("mk_form", form); put("mk_ref", ref); };
 const count = () => Object.values(cart).reduce((a, b) => a + b, 0);
@@ -371,7 +371,7 @@ const total = () => Object.entries(cart).reduce((a, [k, n]) => a + byId(k).price
 const waLink = text => "https://wa.me/" + WA_NUMBER + "?text=" + encodeURIComponent(text);
 const bags = n => n === 1 ? "كيس واحد" : n === 2 ? "كيسين" : n <= 10 ? n + " أكياس" : n + " كيس";
 let SRC = ""; try { SRC = (new URLSearchParams(location.search).get("src") || "").replace(/[^\w\u0600-\u06FF -]/g, "").slice(0, 30); } catch (e) {}
-const newRef = () => { const d = new Date(); return "MK-" + String(d.getMonth() + 1).padStart(2, "0") + String(d.getDate()).padStart(2, "0") + "-" + String(Math.floor(1000 + Math.random() * 9000)); };
+const newRef = () => String(100 + Math.floor(Math.random() * 900));
 function toast(msg){ const t = $("#toast"); t.textContent = msg; t.hidden = false; clearTimeout(toast.t); toast.t = setTimeout(() => t.hidden = true, 2200); }
 
 /* product block */
@@ -457,7 +457,8 @@ function renderDrawer(){
   } else { $("#dTitle").textContent = "كمّل في الواتساب";
     body.innerHTML = `<div class="done"><div class="big"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20l1.3-4.2A8 8 0 1 1 8.4 19L4 20Z"/><path d="M9 12l2 2 4-4"/></svg></div>
       <h3>باقي خطوة وحدة</h3><p>انفتح لك الواتساب والرسالة مكتوبة. اضغط «إرسال» هناك عشان يوصلنا طلبك، ونرد عليك بالتأكيد وتفاصيل الدفع.</p>
-      <span class="ref">رقم طلبك: <span class="num">${esc(ref)}</span></span></div>
+      <span class="ref">رقم طلبك: <span class="num">${esc(ref)}</span></span>
+      <p class="hint">تتبع طلبك من <a href="https://morassakh.com/track.html" target="_blank" rel="noopener"><span class="num">morassakh.com/track.html</span></a> برقم الطلب وآخر 4 أرقام من جوالك.</p></div>
       <div class="hint">ما انفتح الواتساب؟ انسخ الرسالة وأرسلها لنا${WA_NUMBER ? ' على <span class="num">+' + WA_NUMBER + "</span>" : ""}:</div><div class="pv" id="pv"></div>`;
     $("#pv").textContent = orderText();
     foot.innerHTML = `<button class="btn primary block" type="button" id="copyBtn">انسخ الرسالة</button>
