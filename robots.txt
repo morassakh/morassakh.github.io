@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+Disallow: /receipt.html
+
+Sitemap: https://morassakh.com/sitemap.xml
